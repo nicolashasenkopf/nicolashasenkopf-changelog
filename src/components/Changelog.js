@@ -1,10 +1,22 @@
-import { Box, List, ListIcon, ListItem, Text } from '@chakra-ui/react';
-import { FaCheck } from 'react-icons/fa';
+import {
+  Badge,
+  Box,
+  Flex,
+  List,
+  ListIcon,
+  ListItem,
+  Text,
+} from '@chakra-ui/react';
+import { FaCheck, FaTimes, FaWrench } from 'react-icons/fa';
+import { timestampToDate } from '../utils/time';
 
 function Changelog(props) {
   return (
     <Box mt={5}>
-      <Text fontSize="xl">Changelog {props.version}</Text>
+      <Flex alignItems='center'>
+        <Text fontSize="xl">Changelog {props.version}</Text>
+        <Badge ml={3} colorScheme='green' fontSize='0.8em'>{timestampToDate(props.date)}</Badge>
+      </Flex>
       <Box
         borderLeft="2px"
         borderLeftColor="secondaryLight"
@@ -16,8 +28,16 @@ function Changelog(props) {
         <List spacing={3}>
           {props.items.map(item => (
             <ListItem key={item.text}>
-              <ListIcon as={FaCheck} color="green.500" />
-              {item.text}
+              <Flex alignItems="center">
+                {item.type === 'add' ? (
+                  <ListIcon as={FaCheck} color="green.500" />
+                ) : item.type === 'remove' ? (
+                  <ListIcon as={FaTimes} color="red.500" />
+                ) : (
+                  <ListIcon as={FaWrench} color="orange" />
+                )}
+                {item.text}
+              </Flex>
             </ListItem>
           ))}
         </List>

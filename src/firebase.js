@@ -1,25 +1,72 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import {
+  getFirestore,
+  getDocs,
+  addDoc,
+  collection,
+  doc,
+  deleteDoc,
+} from 'firebase/firestore';
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: 'AIzaSyAykNmnr7HiO1GgS6JicZ8r2WuVKb9Ayho',
-  authDomain: 'changelog-b5fd8.firebaseapp.com',
-  projectId: 'changelog-b5fd8',
-  storageBucket: 'changelog-b5fd8.appspot.com',
-  messagingSenderId: '535555527949',
-  appId: '1:535555527949:web:78d634baa189f752e94c44',
-  measurementId: 'G-5R2J81L85E',
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
 export const auth = getAuth(app);
 export const firestore = getFirestore(app);
+export const logInWithEmailAndPassword = async (email, password, callback) => {
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (err) {
+    callback('Email oder Passwort falsch');
+  }
+};
+export const logout = () => {
+  signOut(auth);
+};
+export const getChangelogs = async () => {
+  let changelogs = [];
+  const querySnapshot = await getDocs(collection(firestore, 'changelogs'));
+  for (let i = 0; i < querySnapshot.docs.length; i++) {
+    const data = querySnapshot.docs[i].data();
+    changelogs.push({
+      id: querySnapshot.docs[i].id,
+      version: data.version,
+      items: data.items,
+      date: data.date,
+    });
+  }
+  return changelogs;
+};
+export const addChangelog = async (version, items, callback) => {
+  try {
+    await addDoc(collection(firestore, 'changelogs'), {
+      version: version,
+      items: items,
+      date: Date.now(),
+    });
+    callback(null);
+  } catch (error) {
+    callback(error);
+  }
+};
+export const deleteChangelog = async (changelog, callback) => {
+  try {
+    const docRef = doc(firestore, 'changelogs', changelog.id);
+    await deleteDoc(docRef);
+    callback(null);
+  } catch (error) {
+    callback(error);
+  }
+};

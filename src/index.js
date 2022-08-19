@@ -2,6 +2,7 @@ import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 import React, { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import App from './App';
+import Footer from './components/Footer';
 import Navbar from './components/Navbar';
 import * as serviceWorker from './serviceWorker';
 
@@ -27,11 +28,13 @@ const theme = extendTheme({
 
 root.render(
   <StrictMode>
-    Test
     <ColorModeScript />
     <ChakraProvider theme={theme}>
-      <Navbar />
-      <App />
+      <div style={{ minHeight: '100vh' }}>
+        <Navbar />
+        <App />
+      </div>
+      <Footer />
     </ChakraProvider>
   </StrictMode>
 );
