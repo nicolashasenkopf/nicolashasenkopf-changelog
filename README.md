@@ -1,4 +1,4 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Changelogseite mit Admininterface für verschiedene Anwendungszwecke [Changelog](https://changelog.nicolas-hasenkopf.de).
 
 ## Available Scripts
 
