@@ -47,6 +47,7 @@ export const getChangelogs = async () => {
       date: data.date,
     });
   }
+  changelogs.sort((a, b) => b.date - a.date);
   return changelogs;
 };
 export const addChangelog = async (version, items, callback) => {
